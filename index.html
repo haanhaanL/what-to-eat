@@ -76,7 +76,7 @@
             display: inline-flex;
             align-items: center;
             gap: 10px;
-            box-shadow: 0 6px 0 #15161f, 0 8px 18px rgba(0, 0, 0, 0.5);
+            box-shadow: none;
             user-select: none;
             flex: 0 1 auto;
             text-transform: uppercase;
@@ -87,12 +87,12 @@
             border-color: #ffb347;
             color: #fff;
             transform: translateY(-2px);
-            box-shadow: 0 8px 0 #15161f, 0 12px 22px rgba(0, 0, 0, 0.5);
+            box-shadow: none;
         }
 
         .category-btn:active {
             transform: translateY(4px);
-            box-shadow: 0 2px 0 #15161f, 0 6px 14px rgba(0, 0, 0, 0.5);
+            box-shadow: none;
         }
 
         /* 选中态：与“随机开饭”按钮完全一致 */
@@ -101,7 +101,7 @@
             color: #1e1f2c;
             border: 1px solid #ffeacb;
             border-bottom: 1px solid #ffeacb;
-            box-shadow: 0 8px 0 #9e621b, 0 8px 25px rgba(255, 180, 71, 0.4);
+            box-shadow: none;
             font-weight: 800;
             transform: translateY(0);
             text-shadow: none;
@@ -109,7 +109,7 @@
 
         .category-btn.active:active {
             transform: translateY(5px);
-            box-shadow: 0 3px 0 #9e621b, 0 8px 20px rgba(255, 180, 71, 0.4);
+            box-shadow: none;
         }
 
         .category-btn .cat-emoji { font-size: 1.4rem; }
@@ -200,7 +200,7 @@
         .food-box {
             background: #0f1019;
             border-radius: 16px;
-            padding: 2rem 1.5rem 1.8rem;
+            padding: 1rem 1.5rem 1.8rem; 
             margin: 1rem 0 1.6rem;
             border: 1px solid #3c3e55;
             box-shadow: inset 0 6px 12px rgba(0, 0, 0, 0.8), 0 2px 0 #4a4d6b;
@@ -226,10 +226,6 @@
             margin-bottom: 0.3rem;
             filter: drop-shadow(0 10px 8px rgba(0, 0, 0, 0.6));
             transition: transform 0.2s;
-            display: inline-block;
-        }
-        /* 可选：如果 emoji 是单个汉字/字母，给个圆形底 */
-        .food-emoji {
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -240,6 +236,13 @@
             padding: 0.2rem;
             font-weight: 800;
             color: #ffb347;
+        }
+
+        /* 奶茶品牌 Logo 样式：品牌色背景 + 白色文字 */
+        .food-emoji.brand-logo {
+            border: 1px solid transparent;
+            transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.2s;
+            font-size: 1.6rem;
         }
 
         .food-box:hover .food-emoji { transform: scale(1.05); }
@@ -340,7 +343,7 @@
             border-radius: 999px;
             letter-spacing: 1.5px;
             cursor: pointer;
-            box-shadow: 0 8px 0 #9e621b, 0 8px 25px rgba(255, 180, 71, 0.4);
+            box-shadow: none;
             transition: all 0.07s ease;
             display: inline-flex;
             align-items: center;
@@ -353,13 +356,13 @@
 
         .btn:active {
             transform: translateY(5px);
-            box-shadow: 0 3px 0 #9e621b, 0 8px 20px rgba(255, 180, 71, 0.4);
+            box-shadow: none;
         }
 
         .btn-secondary {
             background: #2f3147;
             color: #ffeacb;
-            box-shadow: 0 8px 0 #15161f, 0 8px 20px rgba(0, 0, 0, 0.5);
+            box-shadow: none;
             border: 1px solid #5b5e7a;
             font-size: 1rem;
             padding: 0.9rem 1.4rem;
@@ -369,7 +372,7 @@
 
         .btn-secondary:active {
             transform: translateY(5px);
-            box-shadow: 0 3px 0 #15161f, 0 8px 18px rgba(0, 0, 0, 0.5);
+            box-shadow: none;
         }
 
         /* 历史记录 */
@@ -531,7 +534,6 @@
         <!-- 第一步：选择类别 -->
         <div class="category-section">
             <div class="category-group" id="categoryGroup">
-                <!-- ★ 关键修复：data-category 与 currentTab 对齐 -->
                 <button class="category-btn active" data-category="main" id="catNoodles">
                     <span class="cat-emoji">🍜</span> 正餐
                 </button>
@@ -675,18 +677,18 @@
                     parent: '甜食',
                     emoji: '🧋',
                     items: [
-                        { name: '瑞幸', emoji: '瑞', sub: '推荐：生椰拿铁、小黄油美式、橙c美式' },
-                        { name: '霸王茶姬', emoji: '霸', sub: '推荐：伯牙绝弦、白雾红尘、桂馥兰香' },
-                        { name: '茶颜悦色', emoji: '茶', sub: '推荐：幽兰拿铁、天天在向阳、罗曼蒂克' },
-                        { name: '喜茶', emoji: '喜', sub: '推荐：多肉葡萄、多肉芭乐提、烤黑糖波波' },
-                        { name: '蜜雪冰城', emoji: '雪', sub: '推荐：柠檬水、珍珠奶茶、圣代' },
-                        { name: '古茗', emoji: '古', sub: '推荐：超A芝士葡萄、杨枝甘露' },
-                        { name: '茶百道', emoji: '百', sub: '推荐：杨枝甘露、豆乳玉麒麟' },
-                        { name: 'Manner', emoji: 'M', sub: '推荐：干姜美式、冰椰SOE美式、冰葡美式' },
-                        { name: '爷爷不泡茶', emoji: '爷', sub: '推荐：兰香青柠、桂花冰酿、栀子绿茶' },
-                        { name: '茉莉奶白', emoji: '茉', sub: '推荐：茉莉奶白、兰白、栀子奶白' },
-                        { name: '奈雪的茶', emoji: '奈', sub: '推荐：霸气橙子、霸气芝士草莓' },
-                        { name: '库迪', emoji: '库', sub: '推荐：生椰拿铁、潘帕斯蓝生酪拿铁' }
+                        { name: '瑞幸', logo: '瑞', color: '#212771', sub: '推荐：生椰拿铁、小黄油美式、橙c美式' },
+                        { name: '霸王茶姬', logo: '霸', color: '#FF0100', sub: '推荐：伯牙绝弦、白雾红尘、桂馥兰香' },
+                        { name: '茶颜悦色', logo: '颜', color: '#C40031', sub: '推荐：幽兰拿铁、天天在向阳、罗曼蒂克' },
+                        { name: '喜茶', logo: '喜', color: '#2e2e2e', sub: '推荐：多肉葡萄、多肉芭乐提、烤黑糖波波' },
+                        { name: '蜜雪冰城', logo: '雪', color: '#d32f2f', sub: '推荐：柠檬水、珍珠奶茶、圣代' },
+                        { name: '古茗', logo: '古', color: '#2e7d32', sub: '推荐：超A芝士葡萄、杨枝甘露' },
+                        { name: '茶百道', logo: '百', color: '#0650C0', sub: '推荐：杨枝甘露、豆乳玉麒麟' },
+                        { name: 'Manner', logo: 'M', color: '#794D26', sub: '推荐：干姜美式、冰椰SOE美式、冰葡美式' },
+                        { name: '爷爷不泡茶', logo: '爷', color: '#B49265', sub: '推荐：兰香青柠、桂花冰酿、栀子绿茶' },
+                        { name: '茉莉奶白', logo: '茉', color: '#FDBBCB', sub: '推荐：茉莉奶白、兰白、栀子奶白' },
+                        { name: '奈雪', logo: '奈', color: '#A1DD00', sub: '推荐：霸气橙子、霸气芝士草莓' },
+                        { name: '库迪', logo: '库', color: '#B30331', sub: '推荐：生椰拿铁、潘帕斯蓝生酪拿铁' }
                     ]
                 },
                 sweetDessert: {
@@ -697,7 +699,7 @@
                         { name: '清补凉', emoji: '🥥', sub: '品类：海南椰奶、广式糖水' },
                         { name: '面包', emoji: '🍞', sub: '品牌：好利来、佳哥' },
                         { name: '糕点', emoji: '🍪', sub: '品牌：泸溪河、詹记' },
-                        { name: '绵绵冰', emoji: '🍧', sub: '品类：芒果、巧克力、抹茶' },
+                        { name: '绵绵冰', emoji: '🍧', sub: '口味：芒果、巧克力、抹茶' },
                         { name: '冰淇淋', emoji: '🍦', sub: '品牌：蜜雪冰城、DQ' },
                         { name: '木薯羹', emoji: '🥣', sub: '' },
                         { name: '固体杨枝甘露', emoji: '🥭', sub: '' }
@@ -850,8 +852,25 @@
                 });
             }
 
+            /* 应用奶茶品牌 Logo 样式：品牌色背景 + 白色文字 */
+            function applyBrandLogo(food) {
+                if (currentCategory === 'tea') {
+                    foodEmoji.textContent = food.logo || food.emoji || '';
+                    foodEmoji.classList.add('brand-logo');
+                    foodEmoji.style.background = food.color || '#ffb347';
+                    foodEmoji.style.color = '#ffffff';
+                    foodEmoji.style.borderColor = 'transparent';
+                } else {
+                    foodEmoji.textContent = food.emoji;
+                    foodEmoji.classList.remove('brand-logo');
+                    foodEmoji.style.background = '';
+                    foodEmoji.style.color = '';
+                    foodEmoji.style.borderColor = '';
+                }
+            }
+
             function updateFoodDisplay(food) {
-                foodEmoji.textContent = food.emoji;
+                applyBrandLogo(food);
                 foodName.textContent = food.name;
                 renderSubLines(food.sub);
 
@@ -896,7 +915,7 @@
                                 syncMainButtonActive();
                                 renderSubMenu();
                                 updateSubGroupVisibility();
-                                foodEmoji.textContent = foundFood.emoji;
+                                applyBrandLogo(foundFood);
                                 foodName.textContent = foundFood.name;
                                 renderSubLines(foundFood.sub);
                                 const catData = foodCategories[foundCatKey];
