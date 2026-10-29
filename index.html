@@ -5,11 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>让我想想今天吃什么</title>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             background: linear-gradient(145deg, #2b2d42 0%, #1e1f2c 100%);
@@ -56,9 +52,7 @@
         }
 
         /* ---------- 一级菜单（主分类） ---------- */
-        .category-section {
-            margin: 1.2rem 0 0.8rem;
-        }
+        .category-section { margin: 1.2rem 0 0.8rem; }
 
         .category-group {
             display: flex;
@@ -83,7 +77,6 @@
             align-items: center;
             gap: 10px;
             box-shadow: 0 6px 0 #15161f, 0 8px 18px rgba(0, 0, 0, 0.5);
-            border-bottom: 3px solid #3c3e55;
             user-select: none;
             flex: 0 1 auto;
             text-transform: uppercase;
@@ -102,25 +95,24 @@
             box-shadow: 0 2px 0 #15161f, 0 6px 14px rgba(0, 0, 0, 0.5);
         }
 
+        /* 选中态：与“随机开饭”按钮完全一致 */
         .category-btn.active {
             background: #ffb347;
             color: #1e1f2c;
-            border-color: #ffeacb;
-            box-shadow: 0 6px 0 #9e621b, 0 8px 22px rgba(255, 180, 71, 0.6);
+            border: 1px solid #ffeacb;
+            border-bottom: 1px solid #ffeacb;
+            box-shadow: 0 8px 0 #9e621b, 0 8px 25px rgba(255, 180, 71, 0.4);
             font-weight: 800;
-            border-bottom: 3px solid #b8782a;
             transform: translateY(0);
-            text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
+            text-shadow: none;
         }
 
         .category-btn.active:active {
-            transform: translateY(4px);
-            box-shadow: 0 2px 0 #9e621b, 0 6px 18px rgba(255, 180, 71, 0.5);
+            transform: translateY(5px);
+            box-shadow: 0 3px 0 #9e621b, 0 8px 20px rgba(255, 180, 71, 0.4);
         }
 
-        .category-btn .cat-emoji {
-            font-size: 1.4rem;
-        }
+        .category-btn .cat-emoji { font-size: 1.4rem; }
 
         /* ---------- 二级菜单（子分类） ---------- */
         .category-sub-group {
@@ -134,10 +126,7 @@
             border-top: 1px solid rgba(255, 180, 71, 0.15);
         }
 
-        /* 无二级菜单时完全隐藏，不占高度 */
-        .category-sub-group.hidden-sub {
-            display: none;
-        }
+        .category-sub-group.hidden-sub { display: none; }
 
         .sub-label {
             color: #9a9cbb;
@@ -239,10 +228,21 @@
             transition: transform 0.2s;
             display: inline-block;
         }
-
-        .food-box:hover .food-emoji {
-            transform: scale(1.05);
+        /* 可选：如果 emoji 是单个汉字/字母，给个圆形底 */
+        .food-emoji {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 3.2rem;
+            min-height: 3.2rem;
+            border-radius: 50%;
+            background: rgba(255, 180, 71, 0.12);
+            padding: 0.2rem;
+            font-weight: 800;
+            color: #ffb347;
         }
+
+        .food-box:hover .food-emoji { transform: scale(1.05); }
 
         .food-name {
             font-size: 2.4rem;
@@ -431,9 +431,7 @@
             letter-spacing: 0.5px;
         }
 
-        .reset-icon {
-            font-size: 1rem;
-        }
+        .reset-icon { font-size: 1rem; }
 
         /* 自定义随机面板 */
         .custom-section {
@@ -506,77 +504,23 @@
             text-shadow: none;
         }
 
-        /* 移动端优化（仅调整尺寸、内边距等，不改变圆角） */
+        /* 移动端优化 */
         @media (max-width: 560px) {
-            .card {
-                padding: 1.6rem 1rem 2rem;
-            }
-
-            .title {
-                font-size: 1.3rem;
-                letter-spacing: 3px;
-            }
-
-            .food-box {
-                padding: 1.5rem 0.8rem;
-                height: 260px;
-                overflow: hidden;
-            }
-
-            .custom-section {
-                height: 260px;
-            }
-
-            .food-name {
-                font-size: 1.9rem;
-            }
-
-            .food-emoji {
-                font-size: 2.4rem;
-            }
-
-            .btn {
-                font-size: 1.05rem;
-                padding: 0.8rem 1.4rem;
-            }
-
-            .btn-secondary {
-                font-size: 0.9rem;
-                padding: 0.8rem 1rem;
-            }
-
-            .history-area {
-                font-size: 0.8rem;
-                padding: 0.6rem 0.8rem;
-            }
-
-            .category-btn {
-                font-size: 1rem;
-                padding: 0.7rem 1.3rem;
-                gap: 6px;
-            }
-
-            .category-btn .cat-emoji {
-                font-size: 1.2rem;
-            }
-
-            .sub-btn {
-                font-size: 0.7rem;
-                padding: 0.25rem 0.8rem;
-            }
-
-            .sub-label {
-                font-size: 0.65rem;
-                letter-spacing: 1px;
-            }
-
-            .custom-result {
-                font-size: 1.2rem;
-            }
-
-            .category-group {
-                gap: 0.6rem;
-            }
+            .card { padding: 1.6rem 1rem 2rem; }
+            .title { font-size: 1.3rem; letter-spacing: 3px; }
+            .food-box { padding: 1.5rem 0.8rem; height: 260px; overflow: hidden; }
+            .custom-section { height: 260px; }
+            .food-name { font-size: 1.9rem; }
+            .food-emoji { font-size: 2.4rem; }
+            .btn { font-size: 1.05rem; padding: 0.8rem 1.4rem; }
+            .btn-secondary { font-size: 0.9rem; padding: 0.8rem 1rem; }
+            .history-area { font-size: 0.8rem; padding: 0.6rem 0.8rem; }
+            .category-btn { font-size: 1rem; padding: 0.7rem 1.3rem; gap: 6px; }
+            .category-btn .cat-emoji { font-size: 1.2rem; }
+            .sub-btn { font-size: 0.7rem; padding: 0.25rem 0.8rem; }
+            .sub-label { font-size: 0.65rem; letter-spacing: 1px; }
+            .custom-result { font-size: 1.2rem; }
+            .category-group { gap: 0.6rem; }
         }
     </style>
 </head>
@@ -587,10 +531,11 @@
         <!-- 第一步：选择类别 -->
         <div class="category-section">
             <div class="category-group" id="categoryGroup">
-                <button class="category-btn active" data-category="noodles" id="catNoodles">
+                <!-- ★ 关键修复：data-category 与 currentTab 对齐 -->
+                <button class="category-btn active" data-category="main" id="catNoodles">
                     <span class="cat-emoji">🍜</span> 正餐
                 </button>
-                <button class="category-btn" data-category="dessert" id="catDessert">
+                <button class="category-btn" data-category="sweet" id="catDessert">
                     <span class="cat-emoji">🍰</span> 甜食
                 </button>
                 <button class="category-btn" data-category="custom" id="catCustom">
@@ -601,7 +546,6 @@
             <!-- 二级菜单：动态生成 -->
             <div class="category-sub-group" id="subGroup">
                 <span class="sub-label" id="subLabel">正餐 ·</span>
-                <!-- 子分类按钮由 JS 动态生成 -->
             </div>
         </div>
 
@@ -645,14 +589,7 @@
 
     <script>
         (function () {
-            /* ============================================================
-               数据结构重构
-               一级大类：正餐（main）、甜食（sweet）、自定义（custom）
-               正餐二级：粉面、米饭、其他、炒菜、饭馆、小吃
-               甜食二级：奶茶、甜品（原甜品内容）
-               ============================================================ */
             const foodCategories = {
-                /* ---------- 正餐二级 ---------- */
                 noodles: {
                     label: '粉面',
                     parent: '正餐',
@@ -665,7 +602,7 @@
                         { name: '羊肉粉', emoji: '🍲', sub: '' },
                         { name: '螺蛳粉', emoji: '🍲', sub: '' },
                         { name: '泡面', emoji: '🍥', sub: '品牌：统一、康师傅、茄皇' },
-                        { name: '米线', emoji: '🍲', sub: '品类：过桥米线、东北砂锅米线' }
+                        { name: '米线', emoji: '🍲', sub: '品类：云南米线、东北砂锅米线' }
                     ]
                 },
                 rice: {
@@ -720,7 +657,6 @@
                         { name: '火锅',   emoji: '🍲', sub: '品类：川渝火锅、贵州火锅、潮汕牛肉火锅' }
                     ]
                 },
-                /* ---------- 原“小吃”移入正餐，作为二级分类 ---------- */
                 snacks: {
                     label: '小吃',
                     parent: '正餐',
@@ -734,27 +670,25 @@
                         { name: '其他', emoji: '🐙', sub: '品类：章鱼小丸子、烤红薯、糖炒栗子' }
                     ]
                 },
-                /* ---------- 甜食二级：奶茶（新增） ---------- */
                 tea: {
                     label: '奶茶',
                     parent: '甜食',
                     emoji: '🧋',
                     items: [
-                        { name: '瑞幸', emoji: '☕', sub: '推荐：生椰拿铁、厚乳拿铁、丝绒拿铁' },
-                        { name: '霸王茶姬', emoji: '🍵', sub: '推荐：伯牙绝弦、花田乌龙、桂馥兰香' },
-                        { name: '茶颜悦色', emoji: '🥤', sub: '推荐：幽兰拿铁、声声乌龙、桂花弄' },
-                        { name: '喜茶', emoji: '🧋', sub: '推荐：多肉葡萄、芝芝莓莓、烤黑糖波波' },
-                        { name: '奈雪的茶', emoji: '🍊', sub: '推荐：霸气橙子、霸气芝士草莓' },
-                        { name: '蜜雪冰城', emoji: '🍦', sub: '推荐：柠檬水、珍珠奶茶、圣代' },
-                        { name: '古茗', emoji: '🥤', sub: '推荐：超A芝士葡萄、杨枝甘露' },
-                        { name: '茶百道', emoji: '🧋', sub: '推荐：杨枝甘露、豆乳玉麒麟' },
-                        { name: 'Manner', emoji: '☕', sub: '推荐：干姜美式、冰椰SOE美式、冰葡美式' },
-                        { name: '库迪', emoji: '☕', sub: '推荐：生椰拿铁、潘帕斯蓝生酪拿铁' },
-                        { name: '爷爷不泡茶', emoji: '🍵', sub: '推荐：荔枝冰酿、桂花冰酿、栀子绿茶' },
-                        { name: '茉莉奶白', emoji: '🥛', sub: '推荐：茉莉奶白、桂花奶白、栀子奶白' }
+                        { name: '瑞幸', emoji: '瑞', sub: '推荐：生椰拿铁、小黄油美式、橙c美式' },
+                        { name: '霸王茶姬', emoji: '霸', sub: '推荐：伯牙绝弦、白雾红尘、桂馥兰香' },
+                        { name: '茶颜悦色', emoji: '茶', sub: '推荐：幽兰拿铁、天天在向阳、罗曼蒂克' },
+                        { name: '喜茶', emoji: '喜', sub: '推荐：多肉葡萄、多肉芭乐提、烤黑糖波波' },
+                        { name: '蜜雪冰城', emoji: '雪', sub: '推荐：柠檬水、珍珠奶茶、圣代' },
+                        { name: '古茗', emoji: '古', sub: '推荐：超A芝士葡萄、杨枝甘露' },
+                        { name: '茶百道', emoji: '百', sub: '推荐：杨枝甘露、豆乳玉麒麟' },
+                        { name: 'Manner', emoji: 'M', sub: '推荐：干姜美式、冰椰SOE美式、冰葡美式' },
+                        { name: '爷爷不泡茶', emoji: '爷', sub: '推荐：兰香青柠、桂花冰酿、栀子绿茶' },
+                        { name: '茉莉奶白', emoji: '茉', sub: '推荐：茉莉奶白、兰白、栀子奶白' },
+                        { name: '奈雪的茶', emoji: '奈', sub: '推荐：霸气橙子、霸气芝士草莓' },
+                        { name: '库迪', emoji: '库', sub: '推荐：生椰拿铁、潘帕斯蓝生酪拿铁' }
                     ]
                 },
-                /* ---------- 甜食二级：甜品（原甜品内容） ---------- */
                 sweetDessert: {
                     label: '甜品',
                     parent: '甜食',
@@ -771,9 +705,6 @@
                 }
             };
 
-            /* ============================================================
-               分类层级关系
-               ============================================================ */
             const CATEGORY_GROUPS = {
                 main: {
                     label: '正餐',
@@ -787,10 +718,6 @@
                 }
             };
 
-            /* 一级菜单（顺序） */
-            const MAIN_TABS = ['main', 'sweet', 'custom'];
-
-            /* ---------- DOM ---------- */
             const foodBox = document.getElementById('foodBox');
             const foodEmoji = document.getElementById('foodEmoji');
             const foodName = document.getElementById('foodName');
@@ -811,20 +738,13 @@
             const customInput = document.getElementById('customInput');
             const customResult = document.getElementById('customResult');
 
-            /* ---------- 状态 ---------- */
-            let currentCategory = 'noodles';   // 当前二级分类 key
-            let currentTab = 'main';           // 当前一级分类 key（main/sweet/custom）
+            let currentCategory = 'noodles';
+            let currentTab = 'main';
             let history = [];
             const MAX_HISTORY = 5;
 
-            /* ---------- 辅助 ---------- */
-            function getCategoryData(key) {
-                return foodCategories[key];
-            }
-
-            function getCurrentCategoryData() {
-                return foodCategories[currentCategory];
-            }
+            function getCategoryData(key) { return foodCategories[key]; }
+            function getCurrentCategoryData() { return foodCategories[currentCategory]; }
 
             function getRandomFoodFromCategory(key) {
                 const catData = foodCategories[key];
@@ -832,9 +752,7 @@
                 return catData.items[Math.floor(Math.random() * catData.items.length)];
             }
 
-            /* ---------- 渲染二级菜单（动态） ---------- */
             function renderSubMenu() {
-                // 清除原有子按钮（保留 subLabel）
                 subGroup.querySelectorAll('.sub-btn').forEach(el => el.remove());
 
                 if (currentTab === 'custom') {
@@ -854,7 +772,6 @@
                 subGroup.style.display = 'flex';
                 subLabel.textContent = `${group.label} ·`;
 
-                // 生成子分类按钮
                 group.subs.forEach(subKey => {
                     const cat = foodCategories[subKey];
                     if (!cat) return;
@@ -872,7 +789,6 @@
                     subGroup.appendChild(btn);
                 });
 
-                // 生成随机子分类按钮
                 const randBtn = document.createElement('button');
                 randBtn.className = 'sub-btn sub-random';
                 randBtn.id = 'randomSubBtn';
@@ -885,7 +801,6 @@
                 subGroup.appendChild(randBtn);
             }
 
-            /* ---------- 渲染食物详情 ---------- */
             function renderSubLines(subText) {
                 foodSubWrap.innerHTML = '';
                 if (!subText || subText.trim() === '') return;
@@ -949,7 +864,6 @@
                 }
             }
 
-            /* ---------- 历史记录 ---------- */
             function renderHistory() {
                 historyContainer.innerHTML = '';
 
@@ -972,16 +886,12 @@
                                 break;
                             }
                         }
-                        const emoji = foundFood ? foundFood.emoji : '🍽️';
-                        badge.textContent = `${emoji} ${foodNameStr}`;
+                        badge.textContent = foodNameStr;
                         badge.addEventListener('click', (e) => {
                             e.stopPropagation();
                             if (foundFood && foundCatKey) {
-                                // 找到所属一级
                                 const parentTab = findTabBySub(foundCatKey);
-                                if (parentTab) {
-                                    currentTab = parentTab;
-                                }
+                                if (parentTab) currentTab = parentTab;
                                 currentCategory = foundCatKey;
                                 syncMainButtonActive();
                                 renderSubMenu();
@@ -1020,7 +930,6 @@
                 return null;
             }
 
-            /* ---------- 显隐控制 ---------- */
             function updateSubGroupVisibility() {
                 const isCustom = currentTab === 'custom';
                 customSection.style.display = isCustom ? 'flex' : 'none';
@@ -1035,11 +944,9 @@
                 }
             }
 
-            /* ---------- 一级按钮同步 ---------- */
             function syncMainButtonActive() {
-                const activeTab = currentTab;
                 categoryBtns.forEach(btn => {
-                    if (btn.dataset.category === activeTab) {
+                    if (btn.dataset.category === currentTab) {
                         btn.classList.add('active');
                     } else {
                         btn.classList.remove('active');
@@ -1047,15 +954,11 @@
                 });
             }
 
-            /* ---------- 切换二级分类 ---------- */
             function switchSubCategory(subKey, autoRandom = true) {
                 currentCategory = subKey;
 
-                // 找到该子分类所属的一级
                 const parentTab = findTabBySub(subKey);
-                if (parentTab) {
-                    currentTab = parentTab;
-                }
+                if (parentTab) currentTab = parentTab;
 
                 syncMainButtonActive();
                 renderSubMenu();
@@ -1086,10 +989,8 @@
                 }
             }
 
-            /* ---------- 切换一级分类 ---------- */
             function switchMainTab(tabKey) {
                 if (tabKey === 'custom') {
-                    // 切到自定义
                     if (currentTab !== 'custom') {
                         currentTab = 'custom';
                         syncMainButtonActive();
@@ -1103,13 +1004,11 @@
                 const group = CATEGORY_GROUPS[tabKey];
                 if (!group) return;
 
-                // 若当前就在该一级下，则随机当前二级
                 if (currentTab === tabKey) {
                     pickRandomAndUpdate();
                     return;
                 }
 
-                // 切到该一级下的默认第一个二级
                 const defaultSub = group.subs[0];
                 currentTab = tabKey;
                 currentCategory = defaultSub;
@@ -1124,7 +1023,6 @@
                 }
             }
 
-            /* ---------- 随机当前分类 ---------- */
             function pickRandomAndUpdate() {
                 if (currentTab === 'custom') return;
                 const items = getCurrentCategoryData().items;
@@ -1143,7 +1041,6 @@
                 setTimeout(() => { foodBox.style.transform = 'scale(1)'; }, 100);
             }
 
-            /* ---------- 随机二级分类 ---------- */
             function pickRandomSubCategory() {
                 if (currentTab === 'custom') return;
                 const group = CATEGORY_GROUPS[currentTab];
@@ -1155,7 +1052,6 @@
                 switchSubCategory(picked, true);
             }
 
-            /* ---------- 清空历史 ---------- */
             function resetHistory() {
                 history = [];
                 renderHistory();
@@ -1163,7 +1059,6 @@
                 setTimeout(() => { resetHistoryBtn.style.transform = 'scale(1)'; }, 100);
             }
 
-            /* ---------- 自定义随机 ---------- */
             function parseCustomOptions(str) {
                 return str.split(/[,，、\s]+/).map(s => s.trim()).filter(s => s.length > 0);
             }
@@ -1193,9 +1088,7 @@
                 setTimeout(() => { customResult.style.transform = 'scale(1)'; }, 150);
             }
 
-            /* ---------- 初始化 ---------- */
             function init() {
-                // 默认：正餐 · 粉面
                 currentTab = 'main';
                 currentCategory = 'noodles';
 
@@ -1208,12 +1101,10 @@
                 history = [];
                 renderHistory();
 
-                /* 一级菜单事件 */
                 catNoodles.addEventListener('click', () => switchMainTab('main'));
                 catDessert.addEventListener('click', () => switchMainTab('sweet'));
                 catCustom.addEventListener('click', () => switchMainTab('custom'));
 
-                /* 随机开饭 / 随机选一个 */
                 randomBtn.addEventListener('click', () => {
                     if (currentTab === 'custom') {
                         pickCustomRandom();
@@ -1225,7 +1116,6 @@
                 foodBox.addEventListener('click', pickRandomAndUpdate);
                 resetHistoryBtn.addEventListener('click', resetHistory);
 
-                /* 键盘：空格随机 */
                 window.addEventListener('keydown', (e) => {
                     if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
                     if (currentTab === 'custom') return;
@@ -1235,7 +1125,6 @@
                     }
                 });
 
-                /* 自定义输入回车 */
                 customInput.addEventListener('keydown', (e) => {
                     if (e.key === 'Enter') {
                         e.preventDefault();
