@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>让我想想今天吃什么</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: linear-gradient(145deg, #2b2d42 0%, #1e1f2c 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            padding: 1rem;
+        }
+
+        .card {
+            background: rgba(22, 23, 35, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 3rem 3rem 2rem 2rem;
+            box-shadow: 0 25px 40px -10px rgba(0, 0, 0, 0.7), inset 0 1px 2px rgba(255, 255, 255, 0.08);
+            padding: 2.2rem 2rem 2.5rem;
+            max-width: 720px;
+            width: 100%;
+            text-align: center;
+            border: 1px solid rgba(255, 180, 100, 0.2);
+            transition: all 0.2s;
+        }
+
+        .title {
+            font-size: 1.6rem;
+            font-weight: 400;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            color: #ffeacb;
+            text-shadow: 0 2px 4px rgba(255, 140, 0, 0.4);
+            margin-bottom: 1rem;
+            word-break: keep-all;
+        }
+
+        .title span {
+            font-weight: 700;
+            color: #ffb347;
+            background: linear-gradient(to right, #ffb347, #ffd966);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: none;
+        }
+
+        /* 类别选择区 */
+        .category-section {
+            margin: 1.2rem 0 0.8rem;
+        }
+
+        .category-label {
+            font-size: 0.85rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: #9a9cbb;
+            margin-bottom: 0.7rem;
+            font-weight: 300;
+        }
+
+        .category-group {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.7rem;
+        }
+
+        .category-btn {
+            border: 1px solid #4a4d6b;
+            background: #24263b;
+            color: #c8cae0;
+            font-weight: 600;
+            font-size: 1rem;
+            padding: 0.65rem 1.6rem;
+            border-radius: 50px;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.12s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 0 #15161f, 0 4px 12px rgba(0, 0, 0, 0.4);
+            border-bottom: 2px solid #3c3e55;
+            user-select: none;
+            flex: 0 1 auto;
+        }
+
+        .category-btn:hover {
+            background: #2f3147;
+            border-color: #ffb347;
+            color: #fff;
+            transform: translateY(-1px);
+        }
+
+        .category-btn:active {
+            transform: translateY(3px);
+            box-shadow: 0 1px 0 #15161f, 0 4px 10px rgba(0, 0, 0, 0.4);
+        }
+
+        .category-btn.active {
+            background: #ffb347;
+            color: #1e1f2c;
+            border-color: #ffeacb;
+            box-shadow: 0 4px 0 #9e621b, 0 4px 15px rgba(255, 180, 71, 0.5);
+            font-weight: 700;
+            border-bottom: 2px solid #b8782a;
+            transform: translateY(0);
+        }
+
+        .category-btn.active:active {
+            transform: translateY(3px);
+            box-shadow: 0 1px 0 #9e621b, 0 4px 12px rgba(255, 180, 71, 0.5);
+        }
+
+        .category-btn .cat-emoji {
+            font-size: 1.15rem;
+        }
+
+        /* 正餐子分类 */
+        .category-sub-group {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin: 1rem 0 0.2rem;
+        }
+
+        .sub-label {
+            color: #9a9cbb;
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            margin-right: 0.2rem;
+        }
+
+        .sub-btn {
+            border: 1px solid #4a4d6b;
+            background: #24263b;
+            color: #c8cae0;
+            font-size: 0.85rem;
+            padding: 0.35rem 1rem;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.12s;
+            letter-spacing: 1px;
+        }
+
+        .sub-btn:hover {
+            border-color: #ffb347;
+            color: #fff;
+        }
+
+        .sub-btn.active {
+            background: #ffb347;
+            color: #1e1f2c;
+            font-weight: 700;
+            border-color: #ffeacb;
+            box-shadow: 0 2px 0 #9e621b;
+        }
+
+        /* 食物展示区 —— 固定高度 */
+        .food-box {
+            background: #0f1019;
+            border-radius: 2.5rem;
+            padding: 2rem 1.5rem 1.8rem;
+            margin: 1rem 0 1.6rem;
+            border: 1px solid #3c3e55;
+            box-shadow: inset 0 6px 12px rgba(0, 0, 0, 0.8), 0 2px 0 #4a4d6b;
+            transition: all 0.15s ease;
+            cursor: pointer;
+            user-select: none;
+            height: 300px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .food-box:hover {
+            border-color: #ffb347;
+            box-shadow: inset 0 6px 12px rgba(0, 0, 0, 0.8), 0 0 15px rgba(255, 180, 71, 0.3);
+        }
+
+        .food-emoji {
+            font-size: 4rem;
+            line-height: 1.2;
+            margin-bottom: 0.3rem;
+            filter: drop-shadow(0 10px 8px rgba(0, 0, 0, 0.6));
+            transition: transform 0.2s;
+            display: inline-block;
+        }
+
+        .food-box:hover .food-emoji {
+            transform: scale(1.05);
+        }
+
+        .food-name {
+            font-size: 3.2rem;
+            font-weight: 800;
+            color: #fff4e6;
+            text-shadow: 0 4px 0 #7a4f1a, 0 8px 15px rgba(0, 0, 0, 0.6);
+            line-height: 1.3;
+            word-break: break-word;
+            letter-spacing: 1px;
+            transition: all 0.2s;
+            margin-top: 0.2rem;
+        }
+
+        .food-sub-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            margin-top: 0.35rem;
+            min-height: 2.4em;
+            justify-content: center;
+        }
+
+        .food-sub-line {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            line-height: 1.1;
+        }
+
+        .food-sub {
+            font-size: 0.9rem;
+            color: #b9b9d6;
+            letter-spacing: 2px;
+            font-weight: 300;
+            text-transform: uppercase;
+            opacity: 0.8;
+            line-height: 1.15;
+        }
+
+        .sub-dice {
+            border: 1px solid #4a4d6b;
+            background: #24263b;
+            color: #ffb347;
+            font-size: 0.8rem;
+            width: 1.6rem;
+            height: 1.6rem;
+            border-radius: 50%;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.12s;
+            flex-shrink: 0;
+            padding: 0;
+        }
+
+        .sub-dice:hover {
+            background: #ffb347;
+            color: #1e1f2c;
+            border-color: #ffeacb;
+        }
+
+        .category-tag {
+            display: inline-block;
+            background: #2f3147;
+            color: #ffb347;
+            font-size: 0.7rem;
+            padding: 0.2rem 1rem;
+            border-radius: 30px;
+            letter-spacing: 2px;
+            margin-top: 0.8rem;
+            border: 1px solid #4a4d6b;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        /* 按钮组 —— 始终显示，位置固定 */
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 0.4rem;
+        }
+
+        .btn {
+            border: none;
+            background: #ffb347;
+            color: #1e1f2c;
+            font-weight: 700;
+            font-size: 1.2rem;
+            padding: 0.9rem 2rem;
+            border-radius: 60px;
+            letter-spacing: 1.5px;
+            cursor: pointer;
+            box-shadow: 0 8px 0 #9e621b, 0 8px 25px rgba(255, 180, 71, 0.4);
+            transition: all 0.07s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            flex: 1 0 auto;
+            min-width: 180px;
+            border: 1px solid #ffeacb;
+        }
+
+        .btn:active {
+            transform: translateY(5px);
+            box-shadow: 0 3px 0 #9e621b, 0 8px 20px rgba(255, 180, 71, 0.4);
+        }
+
+        .btn-secondary {
+            background: #2f3147;
+            color: #ffeacb;
+            box-shadow: 0 8px 0 #15161f, 0 8px 20px rgba(0, 0, 0, 0.5);
+            border: 1px solid #5b5e7a;
+            font-size: 1rem;
+            padding: 0.9rem 1.4rem;
+            min-width: 130px;
+            flex: 0.6 1 auto;
+        }
+
+        .btn-secondary:active {
+            transform: translateY(5px);
+            box-shadow: 0 3px 0 #15161f, 0 8px 18px rgba(0, 0, 0, 0.5);
+        }
+
+        /* 历史记录 */
+        .history-area {
+            margin-top: 1.8rem;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 0.8rem 1.2rem;
+            border-radius: 100px;
+            border: 1px solid #36384e;
+            color: #b9b9d6;
+            font-size: 0.9rem;
+        }
+
+        .history-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #ffb347;
+            font-weight: 500;
+            letter-spacing: 1px;
+            white-space: nowrap;
+        }
+
+        .history-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .history-badge {
+            background: #24263b;
+            padding: 0.25rem 0.9rem;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #e0e0f0;
+            border: 1px solid #4a4d6b;
+            box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.05);
+            white-space: nowrap;
+            transition: all 0.1s;
+            cursor: pointer;
+        }
+
+        .history-badge:hover {
+            background: #3c3e55;
+            border-color: #ffb347;
+            color: #fff;
+        }
+
+        .empty-history {
+            color: #6b6e8a;
+            font-style: italic;
+            letter-spacing: 0.5px;
+        }
+
+        .reset-icon {
+            font-size: 1rem;
+        }
+
+        /* 自定义随机面板 —— 与 food-box 同高 */
+        .custom-section {
+            margin: 1rem 0 1.6rem;
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 2.5rem;
+            padding: 1rem 1.2rem 1.2rem;
+            border: 1px solid #36384e;
+            height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .custom-label {
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #9a9cbb;
+            margin-bottom: 0.7rem;
+            text-align: center;
+        }
+
+        .custom-input {
+            width: 100%;
+            background: #0f1019;
+            border: 1px solid #4a4d6b;
+            border-radius: 50px;
+            padding: 0.65rem 1.2rem;
+            color: #ffeacb;
+            font-size: 0.95rem;
+            letter-spacing: 1px;
+            outline: none;
+            transition: all 0.15s;
+            text-align: center;
+        }
+
+        .custom-input:focus {
+            border-color: #ffb347;
+            box-shadow: 0 0 12px rgba(255, 180, 71, 0.3);
+        }
+
+        .custom-input::placeholder {
+            color: #5a5d7a;
+            letter-spacing: 1px;
+        }
+
+        .custom-result {
+            margin-top: 0.9rem;
+            text-align: center;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #fff4e6;
+            text-shadow: 0 2px 0 #7a4f1a, 0 4px 10px rgba(0, 0, 0, 0.5);
+            min-height: 2.4rem;
+            letter-spacing: 1px;
+            transition: all 0.15s;
+            word-break: break-word;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .custom-result.empty {
+            color: #5a5d7a;
+            font-weight: 400;
+            font-size: 0.85rem;
+            font-style: italic;
+            text-shadow: none;
+        }
+
+        /* 移动端优化 */
+        @media (max-width: 560px) {
+            .card {
+                padding: 1.6rem 1rem 2rem;
+                border-radius: 2rem;
+            }
+
+            .title {
+                font-size: 1.3rem;
+                letter-spacing: 3px;
+            }
+
+            .food-box {
+                padding: 1.5rem 0.8rem;
+                height: 260px;
+                overflow: hidden;
+            }
+
+            .custom-section {
+                height: 260px;
+            }
+
+            .food-name {
+                font-size: 2.4rem;
+            }
+
+            .food-emoji {
+                font-size: 3rem;
+            }
+
+            .btn {
+                font-size: 1.05rem;
+                padding: 0.8rem 1.4rem;
+                min-width: 150px;
+            }
+
+            .btn-secondary {
+                font-size: 0.9rem;
+                padding: 0.8rem 1rem;
+                min-width: 110px;
+            }
+
+            .history-area {
+                font-size: 0.8rem;
+                padding: 0.6rem 0.8rem;
+            }
+
+            .category-btn {
+                font-size: 0.9rem;
+                padding: 0.55rem 1.2rem;
+            }
+
+            .sub-btn {
+                font-size: 0.75rem;
+                padding: 0.3rem 0.8rem;
+            }
+
+            .custom-result {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="title">今天 <span>吃什么</span> ？</div>
+
+        <!-- 第一步：选择类别（正餐/小吃/甜品/自定义） -->
+        <div class="category-section">
+            <div class="category-label">① 选个类别</div>
+            <div class="category-group" id="categoryGroup">
+                <button class="category-btn active" data-category="noodles" id="catNoodles">
+                    <span class="cat-emoji">🍜</span> 正餐
+                </button>
+                <button class="category-btn" data-category="snacks" id="catSnacks">
+                    <span class="cat-emoji">🥟</span> 小吃
+                </button>
+                <button class="category-btn" data-category="dessert" id="catDessert">
+                    <span class="cat-emoji">🍰</span> 甜品
+                </button>
+                <button class="category-btn" data-category="custom" id="catCustom">
+                    <span class="cat-emoji">✏️</span> 自定义
+                </button>
+            </div>
+
+            <!-- 正餐子分类（粉面/米饭/其他/炒菜/饭馆），仅正餐时显示 -->
+            <div class="category-sub-group" id="subGroup">
+                <span class="sub-label">正餐 ·</span>
+                <button class="sub-btn active" data-sub="noodles" id="subNoodles">粉面</button>
+                <button class="sub-btn" data-sub="rice" id="subRice">米饭</button>
+                <button class="sub-btn" data-sub="other" id="subOther">其他</button>
+                <button class="sub-btn" data-sub="stirfry" id="subStirfry">炒菜</button>
+                <button class="sub-btn" data-sub="restaurant" id="subRestaurant">饭馆</button>
+            </div>
+        </div>
+
+        <!-- 第二步：随机食物展示 -->
+        <div class="food-box" id="foodBox" title="点击也可以随机哦">
+            <div class="food-emoji" id="foodEmoji">🍜</div>
+            <div class="food-name" id="foodName">豌杂面</div>
+            <div class="food-sub-wrap" id="foodSubWrap"></div>
+            <div class="category-tag" id="categoryTag">正餐 · 粉面</div>
+        </div>
+
+        <!-- 自定义随机面板（默认隐藏，与 food-box 同高） -->
+        <div class="custom-section" id="customSection" style="display: none;">
+            <div class="custom-label">✏️ 自定义随机（2-5个选项）</div>
+            <input
+                type="text"
+                class="custom-input"
+                id="customInput"
+                placeholder="输入选项，用逗号或空格分隔，如：火锅,烤肉,麻辣烫"
+                autocomplete="off"
+            />
+            <div class="custom-result empty" id="customResult">输入选项后点随机，这里显示结果</div>
+        </div>
+
+        <!-- 操作按钮（始终显示，位置固定） -->
+        <div class="btn-group">
+            <button class="btn" id="randomBtn">
+                <span>🎲</span> 随机开饭
+            </button>
+            <button class="btn btn-secondary" id="resetHistoryBtn" title="清空历史记录">
+                <span class="reset-icon">🧹</span> 清空历史
+            </button>
+        </div>
+
+        <!-- 历史记录区 -->
+        <div class="history-area">
+            <div class="history-label">
+                <span>📋</span> 最近吃过
+            </div>
+            <div class="history-items" id="historyContainer">
+                <span class="empty-history">暂无记录，快选一个吧~</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            // ---------- 分类 & 美食数据库 ----------
+            const foodCategories = {
+                noodles: {
+                    label: '粉面',
+                    parent: '正餐',
+                    emoji: '🍜',
+                    items: [
+                        { name: '豌杂面', emoji: '🍜', sub: '' },
+                        { name: '重庆小面', emoji: '🌶️', sub: '' },
+                        { name: '新疆炒米粉', emoji: '🍝', sub: '' },
+                        { name: '牛肉粉/面', emoji: '🍲', sub: '品类：生烫牛肉、原汤牛肉、襄阳牛肉' },
+                        { name: '羊肉粉', emoji: '🍲', sub: '' },
+                        { name: '螺蛳粉', emoji: '🍲', sub: '' },
+                        { name: '泡面', emoji: '🍥', sub: '品牌：统一、康师傅、茄皇' },
+                        { name: '米线', emoji: '🍲', sub: '品类：过桥米线、东北砂锅米线' }
+                    ]
+                },
+                rice: {
+                    label: '米饭',
+                    parent: '正餐',
+                    emoji: '🍚',
+                    items: [
+                        { name: '鸡腿饭', emoji: '🍗', sub: '品牌：沙县' },
+                        { name: '烧腊饭', emoji: '🍖', sub: '品类：白切鸡、烧鸭、叉烧、潮汕肉卷' },
+                        { name: '炒饭', emoji: '🍚', sub: '品类：红葱脆骨、泡椒、青椒' },
+                        { name: '紫菜包饭', emoji: '🍙', sub: '品类：辣白菜、牛肉、金枪鱼' },
+                        { name: '咖喱饭', emoji: '🍛', sub: '品类：鸡肉、猪排' },
+                        { name: '煲仔饭', emoji: '🍲', sub: '' },
+                        { name: '饭团', emoji: '🍙', sub: '品类：卤蛋、里脊' },
+                        { name: '卤肉饭', emoji: '🍚', sub: '' },
+                        { name: '石锅拌饭', emoji: '🥘', sub: '品类：五花肉、肥牛、辣白菜' },
+                        { name: '盖浇饭', emoji: '🍛', sub: '品类：霸碗、辛香、牛久哥' }
+                    ]
+                },
+                other: {
+                    label: '其他',
+                    parent: '正餐',
+                    emoji: '🍽️',
+                    items: [
+                        { name: '饺子', emoji: '🥟', sub: '品类：莲藕鲜肉、酸菜鲜肉、土豆鲜肉\n做法：水饺、蒸饺、煎饺' },
+                        { name: '包子', emoji: '🥠', sub: '品类：叉烧包、酱肉包、牛肉包、鲜肉包、小笼包' },
+                        { name: '披萨', emoji: '🍕', sub: '品牌：必胜客、达美乐、尊宝' },
+                        { name: '麻辣烫', emoji: '🌶️', sub: '品牌：东北麻辣烫、杨国福、张亮、刘文祥' }
+                    ]
+                },
+                stirfry: {
+                    label: '炒菜',
+                    parent: '正餐',
+                    emoji: '🥘',
+                    items: [
+                        { name: '锅包肉', emoji: '🍖', sub: '' },
+                        { name: '溜肉段', emoji: '🍗', sub: '' },
+                        { name: '炒合菜', emoji: '🥬', sub: '' },
+                        { name: '手撕鸡', emoji: '🐔', sub: '' }
+                    ]
+                },
+                restaurant: {
+                    label: '饭馆',
+                    parent: '正餐',
+                    emoji: '🏮',
+                    items: [
+                        { name: '东北菜', emoji: '🏮', sub: '推荐：锅包肉、溜肉段、地三鲜、酸菜炖粉条' },
+                        { name: '川菜',   emoji: '🌶️', sub: '推荐：水煮鱼、回锅肉、麻婆豆腐' },
+                        { name: '湘菜',   emoji: '🌶️', sub: '推荐：辣椒炒肉、金钱蛋、酸菜粉皮' },
+                        { name: '烤鱼',   emoji: '🐟', sub: '推荐：麻辣烤鱼、蒜香烤鱼' },
+                        { name: '烤肉',   emoji: '🥩', sub: '品类：东北烤肉、韩式烤肉' },
+                        { name: '火锅',   emoji: '🍲', sub: '品类：川渝火锅、贵州火锅、潮汕牛肉火锅' }
+                    ]
+                },
+                snacks: {
+                    label: '小吃',
+                    parent: '小吃',
+                    emoji: '🥟',
+                    items: [
+                        { name: '汉堡', emoji: '🍔', sub: '品牌：麦当劳、肯德基、塔斯汀、汉堡王' },
+                        { name: '薯条', emoji: '🍟', sub: '品牌：麦当劳、肯德基、汉堡王\n品类：美式薯条、卷卷薯条' },
+                        { name: '炸物', emoji: '🍗', sub: '品类：炸排骨、炸鸡腿' },
+                        { name: '煎饼', emoji: '🌯', sub: '品牌：煎百味\n品类：菜煎饼、煎饼果子、鸡蛋灌饼' },
+                        { name: '烧烤', emoji: '🍢', sub: '品类：烤肉筋、烤五花、烤牛肉、烤韭菜' },
+                        { name: '其他', emoji: '🐙', sub: '品类：章鱼小丸子、烤红薯、糖炒栗子' }
+                    ]
+                },
+                dessert: {
+                    label: '甜品',
+                    parent: '甜品',
+                    emoji: '🍰',
+                    items: [
+                        { name: '清补凉', emoji: '🥥', sub: '品类：海南椰奶、广式糖水' },
+                        { name: '面包', emoji: '🍞', sub: '品牌：好利来、佳哥' },
+                        { name: '糕点', emoji: '🍪', sub: '品牌：泸溪河、詹记' },
+                        { name: '绵绵冰', emoji: '🍧', sub: '品类：芒果、巧克力、抹茶' },
+                        { name: '冰淇淋', emoji: '🍦', sub: '品牌：蜜雪冰城、DQ' },
+                        { name: '木薯羹', emoji: '🥣', sub: '' },
+                        { name: '固体杨枝甘露', emoji: '🥭', sub: '' }
+                    ]
+                }
+            };
+
+            // ---------- DOM 元素 ----------
+            const foodBox = document.getElementById('foodBox');
+            const foodEmoji = document.getElementById('foodEmoji');
+            const foodName = document.getElementById('foodName');
+            const foodSub = document.getElementById('foodSub');
+            const subDiceBtn = document.getElementById('subDiceBtn');
+            const categoryTag = document.getElementById('categoryTag');
+            const randomBtn = document.getElementById('randomBtn');
+            const resetHistoryBtn = document.getElementById('resetHistoryBtn');
+            const historyContainer = document.getElementById('historyContainer');
+            const subGroup = document.getElementById('subGroup');
+            const customSection = document.getElementById('customSection');
+
+            const catNoodles = document.getElementById('catNoodles');
+            const catSnacks = document.getElementById('catSnacks');
+            const catDessert = document.getElementById('catDessert');
+            const catCustom = document.getElementById('catCustom');
+            const categoryBtns = document.querySelectorAll('.category-btn');
+            const subBtns = document.querySelectorAll('.sub-btn');
+
+            const customInput = document.getElementById('customInput');
+            const customResult = document.getElementById('customResult');
+
+            // ---------- 状态 ----------
+            let currentCategory = 'noodles';
+            let history = [];
+            const MAX_HISTORY = 5;
+
+            const MAIN_CATEGORIES = ['noodles', 'rice', 'other', 'stirfry', 'restaurant'];
+
+            // ---------- 辅助函数 ----------
+            function getCurrentCategoryData() {
+                return foodCategories[currentCategory];
+            }
+
+            function getRandomFoodFromCurrentCategory() {
+                const catData = getCurrentCategoryData();
+                const items = catData.items;
+                const randomIndex = Math.floor(Math.random() * items.length);
+                return items[randomIndex];
+            }
+
+            function updateFoodDisplay(food) {
+                foodEmoji.textContent = food.emoji;
+                foodName.textContent = food.name;
+                renderSubLines(food.sub);
+                // sub 为空时隐藏骰子，否则显示
+                if (subDiceBtn) {
+                    subDiceBtn.style.display = food.sub && food.sub.trim() !== '' ? 'inline-flex' : 'none';
+                }
+                const catData = getCurrentCategoryData();
+                const parentLabel = catData.parent || catData.label;
+                if (parentLabel !== catData.label) {
+                    categoryTag.textContent = `${catData.emoji} ${parentLabel} · ${catData.label}`;
+                } else {
+                    categoryTag.textContent = `${catData.emoji} ${catData.label}`;
+                }
+            }
+
+            const foodSubWrap = document.getElementById('foodSubWrap');
+
+            function renderSubLines(subText) {
+                foodSubWrap.innerHTML = '';
+                if (!subText || subText.trim() === '') {
+                    return;
+                }
+
+                // 按行拆分
+                const lines = subText.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+
+                lines.forEach(line => {
+                    // 解析前缀和内容
+                    const match = line.match(/^(品牌\/品类|品牌|品类|做法|推荐)\s*[:：]\s*(.*)$/);
+                    let prefix = '';
+                    let content = line;
+                    if (match) {
+                        prefix = match[1];
+                        content = match[2].trim();
+                    }
+
+                    const lineDiv = document.createElement('div');
+                    lineDiv.className = 'food-sub-line';
+
+                    const textSpan = document.createElement('span');
+                    textSpan.className = 'food-sub';
+                    textSpan.textContent = line;
+                    lineDiv.appendChild(textSpan);
+
+                    const diceBtn = document.createElement('button');
+                    diceBtn.className = 'sub-dice';
+                    diceBtn.textContent = '🎲';
+                    diceBtn.title = '把这行内容带到自定义里随机';
+                    diceBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        if (!content) return;
+
+                        // 切到自定义
+                        if (currentCategory !== 'custom') {
+                            currentCategory = 'custom';
+                            syncMainButtonActive();
+                            syncSubButtonActive();
+                            updateSubGroupVisibility();
+                        }
+
+                        // 追加到输入框（去重）
+                        const existing = parseCustomOptions(customInput.value);
+                        if (!existing.includes(content)) {
+                            const newValue = customInput.value.trim()
+                                ? customInput.value.trim() + '，' + content
+                                : content;
+                            customInput.value = newValue;
+                        }
+
+                        customInput.focus();
+                        const len = customInput.value.length;
+                        customInput.setSelectionRange(len, len);
+                    });
+                    lineDiv.appendChild(diceBtn);
+
+                    foodSubWrap.appendChild(lineDiv);
+                });
+            }
+
+            function renderHistory() {
+                historyContainer.innerHTML = '';
+
+                if (history.length === 0) {
+                    const emptySpan = document.createElement('span');
+                    emptySpan.className = 'empty-history';
+                    emptySpan.textContent = '暂无记录，快选一个吧~';
+                    historyContainer.appendChild(emptySpan);
+                } else {
+                    const reversed = [...history].reverse();
+                    reversed.forEach((foodNameStr) => {
+                        const badge = document.createElement('span');
+                        badge.className = 'history-badge';
+                        let foundFood = null;
+                        let foundCatKey = null;
+                        for (const [catKey, catData] of Object.entries(foodCategories)) {
+                            const item = catData.items.find(f => f.name === foodNameStr);
+                            if (item) {
+                                foundFood = item;
+                                foundCatKey = catKey;
+                                break;
+                            }
+                        }
+                        const emoji = foundFood ? foundFood.emoji : '🍽️';
+                        badge.textContent = `${emoji} ${foodNameStr}`;
+                        badge.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            if (foundFood && foundCatKey) {
+                                switchCategory(foundCatKey, false);
+                                foodEmoji.textContent = foundFood.emoji;
+                                foodName.textContent = foundFood.name;
+                                foodSub.textContent = foundFood.sub;
+                                const catData = foodCategories[foundCatKey];
+                                const parentLabel = catData.parent || catData.label;
+                                if (parentLabel !== catData.label) {
+                                    categoryTag.textContent = `${catData.emoji} ${parentLabel} · ${catData.label}`;
+                                } else {
+                                    categoryTag.textContent = `${catData.emoji} ${catData.label}`;
+                                }
+                                foodBox.style.transform = 'scale(0.99)';
+                                setTimeout(() => { foodBox.style.transform = 'scale(1)'; }, 80);
+                            }
+                        });
+                        historyContainer.appendChild(badge);
+                    });
+                }
+            }
+
+            function addHistory(foodNameStr) {
+                const index = history.indexOf(foodNameStr);
+                if (index !== -1) {
+                    history.splice(index, 1);
+                }
+                history.push(foodNameStr);
+                if (history.length > MAX_HISTORY) {
+                    history.shift();
+                }
+                renderHistory();
+            }
+
+            function updateSubGroupVisibility() {
+                const isCustom = currentCategory === 'custom';
+                const isMain = MAIN_CATEGORIES.includes(currentCategory);
+
+                subGroup.style.display = 'flex';
+                const subItems = subGroup.querySelectorAll('.sub-btn, .sub-label');
+                subItems.forEach(el => {
+                    el.style.visibility = isMain ? 'visible' : 'hidden';
+                });
+
+                customSection.style.display = isCustom ? 'flex' : 'none';
+                foodBox.style.display = isCustom ? 'none' : 'flex';
+
+                if (isCustom) {
+                    randomBtn.innerHTML = '<span>🎲</span> 随机选一个';
+                    resetHistoryBtn.style.display = 'none';
+                } else {
+                    randomBtn.innerHTML = '<span>🎲</span> 随机开饭';
+                    resetHistoryBtn.style.display = 'inline-flex';
+                }
+            }
+
+            function syncMainButtonActive() {
+                if (currentCategory === 'custom') {
+                    categoryBtns.forEach(btn => {
+                        if (btn.dataset.category === 'custom') {
+                            btn.classList.add('active');
+                        } else {
+                            btn.classList.remove('active');
+                        }
+                    });
+                    return;
+                }
+
+                const currentParent = foodCategories[currentCategory].parent;
+                categoryBtns.forEach(btn => {
+                    const btnCat = btn.dataset.category;
+                    if (btnCat === 'custom') {
+                        btn.classList.remove('active');
+                        return;
+                    }
+                    const btnParent = foodCategories[btnCat] ? foodCategories[btnCat].parent : btnCat;
+                    if (btnParent === currentParent) {
+                        btn.classList.add('active');
+                    } else {
+                        btn.classList.remove('active');
+                    }
+                });
+            }
+
+            function syncSubButtonActive() {
+                subBtns.forEach(btn => {
+                    if (btn.dataset.sub === currentCategory) {
+                        btn.classList.add('active');
+                    } else {
+                        btn.classList.remove('active');
+                    }
+                });
+            }
+
+            function switchCategory(catKey, autoRandom = true) {
+                if (currentCategory === 'custom' && catKey !== 'custom') {
+                    customInput.value = '';
+                    customResult.textContent = '输入选项后点随机，这里显示结果';
+                    customResult.classList.add('empty');
+                }
+
+                currentCategory = catKey;
+
+                syncMainButtonActive();
+                syncSubButtonActive();
+                updateSubGroupVisibility();
+
+                if (autoRandom) {
+                    const randomFood = getRandomFoodFromCurrentCategory();
+                    updateFoodDisplay(randomFood);
+                    addHistory(randomFood.name);
+                } else {
+                    const currentFoodName = foodName.textContent;
+                    const catItems = foodCategories[catKey].items;
+                    const exists = catItems.some(f => f.name === currentFoodName);
+                    if (!exists && catItems.length > 0) {
+                        const randomFood = catItems[Math.floor(Math.random() * catItems.length)];
+                        updateFoodDisplay(randomFood);
+                    } else {
+                        const catData = foodCategories[catKey];
+                        const parentLabel = catData.parent || catData.label;
+                        if (parentLabel !== catData.label) {
+                            categoryTag.textContent = `${catData.emoji} ${parentLabel} · ${catData.label}`;
+                        } else {
+                            categoryTag.textContent = `${catData.emoji} ${catData.label}`;
+                        }
+                    }
+                }
+            }
+
+            function pickRandomAndUpdate() {
+                if (currentCategory === 'custom') return;
+                const items = getCurrentCategoryData().items;
+                const currentName = foodName.textContent;
+                let randomFood;
+                if (items.length <= 1) {
+                    randomFood = items[0];
+                } else {
+                    do {
+                        randomFood = items[Math.floor(Math.random() * items.length)];
+                    } while (randomFood.name === currentName);
+                }
+                updateFoodDisplay(randomFood);
+                addHistory(randomFood.name);
+                foodBox.style.transform = 'scale(0.98)';
+                setTimeout(() => { foodBox.style.transform = 'scale(1)'; }, 100);
+            }
+
+            function resetHistory() {
+                history = [];
+                renderHistory();
+                resetHistoryBtn.style.transform = 'scale(0.95)';
+                setTimeout(() => { resetHistoryBtn.style.transform = 'scale(1)'; }, 100);
+            }
+
+            // ---------- 自定义随机逻辑 ----------
+            function parseCustomOptions(str) {
+                return str
+                    .split(/[,，、\s]+/)
+                    .map(s => s.trim())
+                    .filter(s => s.length > 0);
+            }
+
+            function pickCustomRandom() {
+                const raw = customInput.value.trim();
+                if (!raw) {
+                    customResult.textContent = '请先输入选项';
+                    customResult.classList.add('empty');
+                    return;
+                }
+
+                const options = parseCustomOptions(raw);
+
+                if (options.length < 2) {
+                    customResult.textContent = '至少输入 2 个选项';
+                    customResult.classList.add('empty');
+                    return;
+                }
+
+                if (options.length > 5) {
+                    customResult.textContent = '最多支持 5 个选项，请减少一些';
+                    customResult.classList.add('empty');
+                    return;
+                }
+
+                const randomIndex = Math.floor(Math.random() * options.length);
+                const picked = options[randomIndex];
+
+                customResult.textContent = `🎯 ${picked}`;
+                customResult.classList.remove('empty');
+
+                customResult.style.transform = 'scale(1.1)';
+                setTimeout(() => { customResult.style.transform = 'scale(1)'; }, 150);
+            }
+
+            // ---------- 初始化 & 事件绑定 ----------
+            function init() {
+                const defaultCat = foodCategories['noodles'];
+                const defaultFood = defaultCat.items[0];
+                updateFoodDisplay(defaultFood);
+                history = [];
+                renderHistory();
+
+                syncMainButtonActive();
+                syncSubButtonActive();
+                updateSubGroupVisibility();
+
+                catNoodles.addEventListener('click', () => {
+                    if (MAIN_CATEGORIES.includes(currentCategory)) {
+                        pickRandomAndUpdate();
+                    } else {
+                        switchCategory('noodles', true);
+                    }
+                });
+
+                catSnacks.addEventListener('click', () => {
+                    if (currentCategory !== 'snacks') {
+                        switchCategory('snacks', true);
+                    } else {
+                        pickRandomAndUpdate();
+                    }
+                });
+
+                catDessert.addEventListener('click', () => {
+                    if (currentCategory !== 'dessert') {
+                        switchCategory('dessert', true);
+                    } else {
+                        pickRandomAndUpdate();
+                    }
+                });
+
+                catCustom.addEventListener('click', () => {
+                    if (currentCategory !== 'custom') {
+                        currentCategory = 'custom';
+                        syncMainButtonActive();
+                        syncSubButtonActive();
+                        updateSubGroupVisibility();
+                        customInput.focus();
+                    }
+                });
+
+                subBtns.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const subCat = btn.dataset.sub;
+                        if (currentCategory !== subCat) {
+                            switchCategory(subCat, true);
+                        } else {
+                            pickRandomAndUpdate();
+                        }
+                    });
+                });
+
+                randomBtn.addEventListener('click', () => {
+                    if (currentCategory === 'custom') {
+                        pickCustomRandom();
+                    } else {
+                        pickRandomAndUpdate();
+                    }
+                });
+
+                foodBox.addEventListener('click', pickRandomAndUpdate);
+                resetHistoryBtn.addEventListener('click', resetHistory);
+
+                window.addEventListener('keydown', (e) => {
+                    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+                    if (currentCategory === 'custom') return;
+                    if (e.code === 'Space' && !e.repeat) {
+                        e.preventDefault();
+                        pickRandomAndUpdate();
+                    }
+                });
+
+                customInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        pickCustomRandom();
+                    }
+                });
+
+                const subDiceBtn = document.getElementById('subDiceBtn');
+
+                subDiceBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    let currentSubText = foodSub.textContent.trim();
+                    if (!currentSubText) return;
+
+                    // 去掉品牌/品类前缀，多行合并
+                    currentSubText = currentSubText
+                        .split('\n')
+                        .map(line => line.replace(/^(品牌\/品类|品牌|品类)\s*[:：]\s*/, '').trim())
+                        .filter(line => line.length > 0)
+                        .join('，');
+
+                    if (!currentSubText) return;
+
+                    // 切到自定义分类
+                    if (currentCategory !== 'custom') {
+                        currentCategory = 'custom';
+                        syncMainButtonActive();
+                        syncSubButtonActive();
+                        updateSubGroupVisibility();
+                    }
+
+                    // 追加到输入框（去重）
+                    const existing = parseCustomOptions(customInput.value);
+                    if (!existing.includes(currentSubText)) {
+                        const newValue = customInput.value.trim()
+                            ? customInput.value.trim() + '，' + currentSubText
+                            : currentSubText;
+                        customInput.value = newValue;
+                    }
+
+                    customInput.focus();
+                    const len = customInput.value.length;
+                    customInput.setSelectionRange(len, len);
+                });
+            }
+
+            init();
+        })();
+    </script>
+</body>
+</html>
