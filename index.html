@@ -760,6 +760,7 @@
             let currentCategory = 'noodles';
             let currentTab = 'main';
             let history = [];
+            let customHistory = [];   // 自定义随机历史
             const MAX_HISTORY = 5;
 
             /* 轮播状态 */
@@ -767,6 +768,10 @@
             let rollTimer = null;
             const ROLL_DURATION = 500;   // 0.5秒
             const ROLL_INTERVAL = 60;     // 每60ms切换一次
+
+            /* 自定义滚动状态 */
+            let customRollTimer = null;
+            let isCustomRolling = false;
 
             function getCategoryData(key) { return foodCategories[key]; }
             function getCurrentCategoryData() { return foodCategories[currentCategory]; }
@@ -998,6 +1003,7 @@
                 startRollAnimation(finalFood);
             }
 
+            /* ---------- 食物历史 ---------- */
             function renderHistory() {
                 historyContainer.innerHTML = '';
 
@@ -1058,6 +1064,42 @@
                 renderHistory();
             }
 
+            /* ---------- 自定义历史 ---------- */
+            function renderCustomHistory() {
+                historyContainer.innerHTML = '';
+
+                if (customHistory.length === 0) {
+                    const emptySpan = document.createElement('span');
+                    emptySpan.className = 'empty-history';
+                    emptySpan.textContent = '暂无记录，快选一个吧~';
+                    historyContainer.appendChild(emptySpan);
+                } else {
+                    [...customHistory].reverse().forEach((item) => {
+                        const badge = document.createElement('span');
+                        badge.className = 'history-badge';
+                        badge.textContent = item;
+                        // 点击回填到输入框
+                        badge.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            if (isCustomRolling) return;
+                            customInput.value = item;
+                            customInput.focus();
+                            const len = customInput.value.length;
+                            customInput.setSelectionRange(len, len);
+                        });
+                        historyContainer.appendChild(badge);
+                    });
+                }
+            }
+
+            function addCustomHistory(item) {
+                const index = customHistory.indexOf(item);
+                if (index !== -1) customHistory.splice(index, 1);
+                customHistory.push(item);
+                if (customHistory.length > MAX_HISTORY) customHistory.shift();
+                renderCustomHistory();
+            }
+
             function findTabBySub(subKey) {
                 for (const [tabKey, group] of Object.entries(CATEGORY_GROUPS)) {
                     if (group.subs.includes(subKey)) return tabKey;
@@ -1072,10 +1114,12 @@
 
                 if (isCustom) {
                     randomBtn.innerHTML = '随机选一个';
-                    resetHistoryBtn.style.display = 'none';
+                    resetHistoryBtn.style.display = 'inline-flex';
+                    renderCustomHistory();   // 渲染自定义历史
                 } else {
                     randomBtn.innerHTML = '随机开饭';
                     resetHistoryBtn.style.display = 'inline-flex';
+                    renderHistory();         // 渲染食物历史
                 }
             }
 
@@ -1130,9 +1174,35 @@
                         syncMainButtonActive();
                         renderSubMenu();
                         updateSubGroupVisibility();
+                        // 切换进入自定义 tab 时清空输入和结果
+                        customInput.value = '';
+                        customResult.textContent = '输入选项后点随机，这里显示结果';
+                        customResult.classList.add('empty');
+                        // 切换 tab 时清空所有随机历史
+                        history = [];
+                        customHistory = [];
+                        renderCustomHistory();
                         customInput.focus();
                     }
                     return;
+                }
+
+                // 离开自定义 tab 时清空输入和结果，并停止未完成的滚动
+                if (currentTab === 'custom') {
+                    customInput.value = '';
+                    customResult.textContent = '输入选项后点随机，这里显示结果';
+                    customResult.classList.add('empty');
+                    if (customRollTimer) {
+                        clearInterval(customRollTimer);
+                        customRollTimer = null;
+                    }
+                    isCustomRolling = false;
+                    randomBtn.disabled = false;
+                    resetHistoryBtn.disabled = false;
+                    // 切换 tab 时清空所有随机历史
+                    customHistory = [];
+                    history = [];
+                    renderHistory();
                 }
 
                 const group = CATEGORY_GROUPS[tabKey];
@@ -1142,6 +1212,10 @@
                     startRollForCurrentCategory();
                     return;
                 }
+
+                // 切换到其他食物 tab 时也清空历史
+                history = [];
+                customHistory = [];
 
                 const defaultSub = group.subs[0];
                 currentTab = tabKey;
@@ -1165,9 +1239,14 @@
             }
 
             function resetHistory() {
-                if (isRolling) return;
-                history = [];
-                renderHistory();
+                if (isRolling || isCustomRolling) return;
+                if (currentTab === 'custom') {
+                    customHistory = [];
+                    renderCustomHistory();
+                } else {
+                    history = [];
+                    renderHistory();
+                }
                 resetHistoryBtn.style.transform = 'scale(0.95)';
                 setTimeout(() => { resetHistoryBtn.style.transform = 'scale(1)'; }, 100);
             }
@@ -1177,6 +1256,7 @@
             }
 
             function pickCustomRandom() {
+                if (isCustomRolling) return;
                 const raw = customInput.value.trim();
                 if (!raw) {
                     customResult.textContent = '请先输入选项';
@@ -1194,11 +1274,47 @@
                     customResult.classList.add('empty');
                     return;
                 }
-                const picked = options[Math.floor(Math.random() * options.length)];
-                customResult.textContent = `🎯 ${picked}`;
+
+                // 滚动动画
+                isCustomRolling = true;
+                randomBtn.disabled = true;
+                resetHistoryBtn.disabled = true;
                 customResult.classList.remove('empty');
-                customResult.style.transform = 'scale(1.1)';
-                setTimeout(() => { customResult.style.transform = 'scale(1)'; }, 150);
+
+                const finalPick = options[Math.floor(Math.random() * options.length)];
+                const startTime = Date.now();
+
+                function tick() {
+                    const elapsed = Date.now() - startTime;
+                    if (elapsed >= ROLL_DURATION) {
+                        clearInterval(customRollTimer);
+                        customRollTimer = null;
+                        customResult.textContent = `🎯 ${finalPick}`;
+                        customResult.style.transform = 'scale(1.1)';
+                        setTimeout(() => { customResult.style.transform = 'scale(1)'; }, 150);
+                        addCustomHistory(finalPick);   // 记录到自定义历史
+                        isCustomRolling = false;
+                        randomBtn.disabled = false;
+                        resetHistoryBtn.disabled = false;
+                        return;
+                    }
+
+                    let temp;
+                    if (options.length > 1) {
+                        const currentText = customResult.textContent.replace('🎯 ', '');
+                        do {
+                            temp = options[Math.floor(Math.random() * options.length)];
+                        } while (temp === currentText && options.length > 1);
+                    } else {
+                        temp = options[0];
+                    }
+                    customResult.textContent = `🎯 ${temp}`;
+                    customResult.style.transform = 'scale(0.98)';
+                    setTimeout(() => { customResult.style.transform = 'scale(1)'; }, 40);
+                }
+
+                tick();
+                customRollTimer = setInterval(tick, ROLL_INTERVAL);
             }
 
             function init() {
@@ -1212,6 +1328,7 @@
                 const defaultFood = foodCategories['noodles'].items[0];
                 updateFoodDisplay(defaultFood);
                 history = [];
+                customHistory = [];
                 renderHistory();
 
                 catNoodles.addEventListener('click', () => switchMainTab('main'));
@@ -1219,7 +1336,7 @@
                 catCustom.addEventListener('click', () => switchMainTab('custom'));
 
                 randomBtn.addEventListener('click', () => {
-                    if (isRolling) return;
+                    if (isRolling || isCustomRolling) return;
                     if (currentTab === 'custom') {
                         pickCustomRandom();
                     } else {
@@ -1247,6 +1364,7 @@
                 customInput.addEventListener('keydown', (e) => {
                     if (e.key === 'Enter') {
                         e.preventDefault();
+                        if (isCustomRolling) return;
                         pickCustomRandom();
                     }
                 });
