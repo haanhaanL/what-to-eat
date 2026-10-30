@@ -645,8 +645,8 @@
                         { name: '麻辣烫', emoji: '🌶️', sub: '品牌：东北麻辣烫、杨国福、张亮、刘文祥' },
                         { name: '麻辣香锅', emoji: '🌶️', sub: '' },
                         { name: '冒菜', emoji: '🌶️', sub: '' },
-                        { name: '汉堡', emoji: '🍔', sub: '品牌：麦当劳、肯德基、塔斯汀、汉堡王' },,
-                        { name: '三明治', emoji: '🥪', sub: '品牌：赛百味、便利店' },
+                        { name: '汉堡', emoji: '🍔', sub: '品牌：麦当劳、肯德基、塔斯汀、汉堡王' },
+                        { name: '三明治', emoji: '🥪', sub: '品牌：赛百味、便利店' }
                     ]
                 },
                 stirfry: {
@@ -704,8 +704,7 @@
                         { name: '茉莉奶白', logo: '茉', color: '#FDBBCB', sub: '推荐：茉莉奶白、兰白、栀子奶白' },
                         { name: '奈雪', logo: '奈', color: '#A1DD00', sub: '推荐：霸气橙子、霸气芝士草莓' },
                         { name: '库迪', logo: '库', color: '#B30331', sub: '推荐：生椰拿铁、潘帕斯蓝生酪拿铁' },
-                        { name: '一点点', logo: '點', color: '#078062', sub: '推荐：四季奶青、冰淇淋红茶' },
-                        { name: '库迪', logo: '库', color: '#B30331', sub: '推荐：生椰拿铁、潘帕斯蓝生酪拿铁' }
+                        { name: '一点点', logo: '點', color: '#078062', sub: '推荐：四季奶青、冰淇淋红茶' }
                     ]
                 },
                 sweetDessert: {
@@ -714,7 +713,7 @@
                     emoji: '🍰',
                     items: [
                         { name: '清补凉', emoji: '🥥', sub: '可选：海南椰奶、广式糖水' },
-                        { name: '面包', emoji: '🍞', sub: '可选：吐司、贝果、虎皮卷' },,
+                        { name: '面包', emoji: '🍞', sub: '可选：吐司、贝果、虎皮卷' },
                         { name: '甜点', emoji: '🍰', sub: '可选：千层蛋糕、华夫饼、舒芙蕾' },
                         { name: '糕点', emoji: '🍪', sub: '品牌：泸溪河、詹记' },
                         { name: '绵绵冰', emoji: '🍧', sub: '口味：芒果、巧克力、抹茶' },
@@ -905,11 +904,13 @@
             }
 
             function updateFoodDisplay(food) {
+                if (!food) return;   // 保护
                 applyBrandLogo(food);
                 foodName.textContent = food.name;
                 renderSubLines(food.sub);
 
                 const catData = getCurrentCategoryData();
+                if (!catData) return;
                 const parentLabel = catData.parent || catData.label;
                 if (parentLabel !== catData.label) {
                     categoryTag.textContent = `${catData.emoji} ${parentLabel} · ${catData.label}`;
@@ -921,6 +922,7 @@
             /* ---------- 轮播动画 ---------- */
             function startRollAnimation(finalFood, onDone) {
                 if (isRolling) return;
+                if (!finalFood) return;   // 保护
                 isRolling = true;
 
                 // 禁用按钮
@@ -929,7 +931,8 @@
                 foodBox.style.pointerEvents = 'none';
                 foodBox.style.cursor = 'default';
 
-                const catItems = getCurrentCategoryData().items;
+                const catData = getCurrentCategoryData();
+                const catItems = catData && catData.items ? catData.items : [];
                 const startTime = Date.now();
 
                 function tick() {
@@ -950,21 +953,24 @@
                         return;
                     }
 
+                    if (!catItems.length) return;
+
                     // 随机切一个显示（尽量不与当前相同）
                     let temp;
                     if (catItems.length > 1) {
                         const currentName = foodName.textContent;
                         do {
                             temp = catItems[Math.floor(Math.random() * catItems.length)];
-                        } while (temp.name === currentName && catItems.length > 1);
+                        } while (temp && temp.name === currentName && catItems.length > 1);
                     } else {
                         temp = catItems[0];
                     }
-                    updateFoodDisplay(temp);
-
-                    // 轻微缩放反馈
-                    foodBox.style.transform = 'scale(0.985)';
-                    setTimeout(() => { foodBox.style.transform = 'scale(1)'; }, 40);
+                    if (temp) {
+                        updateFoodDisplay(temp);
+                        // 轻微缩放反馈
+                        foodBox.style.transform = 'scale(0.985)';
+                        setTimeout(() => { foodBox.style.transform = 'scale(1)'; }, 40);
+                    }
                 }
 
                 // 立即开始
@@ -975,8 +981,9 @@
             /* 当前分类下随机并轮播 */
             function startRollForCurrentCategory() {
                 if (currentTab === 'custom' || isRolling) return;
-                const items = getCurrentCategoryData().items;
-                if (!items || !items.length) return;
+                const catData = getCurrentCategoryData();
+                if (!catData || !catData.items || !catData.items.length) return;
+                const items = catData.items;
 
                 let finalFood;
                 if (items.length <= 1) {
@@ -985,8 +992,9 @@
                     const currentName = foodName.textContent;
                     do {
                         finalFood = items[Math.floor(Math.random() * items.length)];
-                    } while (finalFood.name === currentName);
+                    } while (finalFood && finalFood.name === currentName);
                 }
+                if (!finalFood) return;
                 startRollAnimation(finalFood);
             }
 
@@ -1005,7 +1013,7 @@
                         let foundFood = null;
                         let foundCatKey = null;
                         for (const [catKey, catData] of Object.entries(foodCategories)) {
-                            const item = catData.items.find(f => f.name === foodNameStr);
+                            const item = catData.items.find(f => f && f.name === foodNameStr);
                             if (item) {
                                 foundFood = item;
                                 foundCatKey = catKey;
@@ -1083,6 +1091,7 @@
 
             function switchSubCategory(subKey, autoRandom = true) {
                 if (isRolling) return;
+                if (!foodCategories[subKey]) return;
                 currentCategory = subKey;
 
                 const parentTab = findTabBySub(subKey);
@@ -1097,7 +1106,7 @@
                 } else {
                     const currentFoodName = foodName.textContent;
                     const catItems = foodCategories[subKey].items;
-                    const exists = catItems.some(f => f.name === currentFoodName);
+                    const exists = catItems.some(f => f && f.name === currentFoodName);
                     if (!exists && catItems.length > 0) {
                         const food = catItems[Math.floor(Math.random() * catItems.length)];
                         updateFoodDisplay(food);
