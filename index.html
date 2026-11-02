@@ -990,7 +990,7 @@
                     emptySpan.textContent = '暂无记录，快选一个吧~';
                     historyContainer.appendChild(emptySpan);
                 } else {
-                    [...history].reverse().forEach((foodNameStr) => {
+                    [...history].forEach((foodNameStr) => {
                         const badge = document.createElement('span');
                         badge.className = 'history-badge';
                         let foundFood = null;
@@ -1027,10 +1027,8 @@
             }
 
             function addHistory(foodNameStr) {
-                const index = history.indexOf(foodNameStr);
-                if (index !== -1) history.splice(index, 1);
-                history.push(foodNameStr);
-                if (history.length > MAX_HISTORY) history.shift();
+                history.unshift(foodNameStr);
+                if (history.length > MAX_HISTORY) history.length = MAX_HISTORY;
                 renderHistory();
             }
 
@@ -1044,7 +1042,7 @@
                     emptySpan.textContent = '暂无记录，快选一个吧~';
                     historyContainer.appendChild(emptySpan);
                 } else {
-                    [...customHistory].reverse().forEach((item) => {
+                    [...customHistory].forEach((item) => {
                         const badge = document.createElement('span');
                         badge.className = 'history-badge';
                         badge.textContent = item;
@@ -1063,10 +1061,8 @@
             }
 
             function addCustomHistory(item) {
-                const index = customHistory.indexOf(item);
-                if (index !== -1) customHistory.splice(index, 1);
-                customHistory.push(item);
-                if (customHistory.length > MAX_HISTORY) customHistory.shift();
+                customHistory.unshift(item);
+                if (customHistory.length > MAX_HISTORY) customHistory.length = MAX_HISTORY;
                 renderCustomHistory();
             }
 
