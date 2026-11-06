@@ -110,8 +110,6 @@
             box-shadow: none;
         }
 
-        .category-btn .cat-emoji { font-size: 1.4rem; }
-
         /* ---------- 二级菜单（子分类） ---------- */
         .category-sub-group {
             display: flex;
@@ -413,8 +411,6 @@
             letter-spacing: 0.5px;
         }
 
-        .reset-icon { font-size: 1rem; }
-
         /* 自定义随机面板 */
         .custom-section {
             margin: 1rem 0 1.6rem;
@@ -498,7 +494,6 @@
             .btn-secondary { font-size: 0.9rem; padding: 0.8rem 1rem; }
             .history-area { font-size: 0.8rem; padding: 0.6rem 0.8rem; }
             .category-btn { font-size: 1rem; padding: 0.7rem 1.3rem; gap: 6px; }
-            .category-btn .cat-emoji { font-size: 1.2rem; }
             .sub-btn { font-size: 0.75rem; height: 2rem; padding: 0 0.9rem; }
             .sub-btn.sub-random { padding: 0; width: 2rem; }
             .custom-result { font-size: 1.2rem; }
@@ -513,13 +508,13 @@
         <div class="category-section">
             <div class="category-group" id="categoryGroup">
                 <button class="category-btn active" data-category="main" id="catNoodles">
-                    <span class="cat-emoji">🍜</span> 正餐
+                    正餐
                 </button>
                 <button class="category-btn" data-category="sweet" id="catDessert">
-                    <span class="cat-emoji">🍰</span> 甜食
+                    甜食
                 </button>
                 <button class="category-btn" data-category="custom" id="catCustom">
-                    <span class="cat-emoji">✏️</span> 自定义
+                    自定义
                 </button>
             </div>
 
@@ -534,12 +529,12 @@
         </div>
 
         <div class="custom-section" id="customSection" style="display: none;">
-            <div class="custom-label">✏️ 自定义随机（2-5个选项）</div>
+            <div class="custom-label">自定义随机（2-5个选项）</div>
             <input
                 type="text"
                 class="custom-input"
                 id="customInput"
-                placeholder="输入选项，用逗号或空格分隔，如：火锅,烤肉,麻辣烫"
+                placeholder="逗号或空格分隔"
                 autocomplete="off"
             />
             <div class="custom-result empty" id="customResult">输入选项后点随机，这里显示结果</div>
@@ -552,7 +547,7 @@
 
         <div class="history-area">
             <div class="history-label">
-                <span>📋</span> 随机历史
+                随机历史
             </div>
             <div class="history-items" id="historyContainer">
                 <span class="empty-history">暂无记录，快选一个吧~</span>
@@ -748,14 +743,14 @@
             let currentCategory = 'noodles';
             let currentTab = 'main';
             let history = [];
-            let customHistory = [];   // 自定义随机历史
+            let customHistory = [];
             const MAX_HISTORY = 5;
 
             /* 轮播状态 */
             let isRolling = false;
             let rollTimer = null;
-            const ROLL_DURATION = 500;   // 0.5秒
-            const ROLL_INTERVAL = 60;     // 每60ms切换一次
+            const ROLL_DURATION = 500;
+            const ROLL_INTERVAL = 60;
 
             /* 自定义滚动状态 */
             let customRollTimer = null;
@@ -838,13 +833,11 @@
                     textSpan.textContent = line;
                     lineDiv.appendChild(textSpan);
 
-                    // 判断 content 是否包含多个选项（用逗号、顿号、斜杠、空格等分隔后数量 > 1）
                     const optionList = content
                         .split(/[,，、\/\s]+/)
                         .map(s => s.trim())
                         .filter(s => s.length > 0);
 
-                    // 只有多个选项时才显示骰子
                     if (optionList.length > 1) {
                         const diceBtn = document.createElement('button');
                         diceBtn.className = 'sub-dice';
@@ -896,7 +889,7 @@
             }
 
             function updateFoodDisplay(food) {
-                if (!food) return;   // 保护
+                if (!food) return;
                 applyBrandLogo(food);
                 foodName.textContent = food.name;
                 renderSubLines(food.sub);
@@ -905,10 +898,9 @@
             /* ---------- 轮播动画 ---------- */
             function startRollAnimation(finalFood, onDone) {
                 if (isRolling) return;
-                if (!finalFood) return;   // 保护
+                if (!finalFood) return;
                 isRolling = true;
 
-                // 禁用按钮
                 randomBtn.disabled = true;
                 resetHistoryBtn.disabled = true;
                 foodBox.style.pointerEvents = 'none';
@@ -921,7 +913,6 @@
                 function tick() {
                     const elapsed = Date.now() - startTime;
                     if (elapsed >= ROLL_DURATION) {
-                        // 定格
                         clearInterval(rollTimer);
                         rollTimer = null;
                         updateFoodDisplay(finalFood);
@@ -938,7 +929,6 @@
 
                     if (!catItems.length) return;
 
-                    // 随机切一个显示（尽量不与当前相同）
                     let temp;
                     if (catItems.length > 1) {
                         const currentName = foodName.textContent;
@@ -950,13 +940,11 @@
                     }
                     if (temp) {
                         updateFoodDisplay(temp);
-                        // 轻微缩放反馈
                         foodBox.style.transform = 'scale(0.985)';
                         setTimeout(() => { foodBox.style.transform = 'scale(1)'; }, 40);
                     }
                 }
 
-                // 立即开始
                 tick();
                 rollTimer = setInterval(tick, ROLL_INTERVAL);
             }
@@ -1047,7 +1035,6 @@
                         const badge = document.createElement('span');
                         badge.className = 'history-badge';
                         badge.textContent = item;
-                        // 点击回填到输入框
                         badge.addEventListener('click', (e) => {
                             e.stopPropagation();
                             if (isCustomRolling) return;
@@ -1082,11 +1069,11 @@
                 if (isCustom) {
                     randomBtn.innerHTML = '随机选一个';
                     resetHistoryBtn.style.display = 'inline-flex';
-                    renderCustomHistory();   // 渲染自定义历史
+                    renderCustomHistory();
                 } else {
                     randomBtn.innerHTML = '随机开饭';
                     resetHistoryBtn.style.display = 'inline-flex';
-                    renderHistory();         // 渲染食物历史
+                    renderHistory();
                 }
             }
 
@@ -1133,11 +1120,9 @@
                         syncMainButtonActive();
                         renderSubMenu();
                         updateSubGroupVisibility();
-                        // 切换进入自定义 tab 时清空输入和结果
                         customInput.value = '';
                         customResult.textContent = '输入选项后点随机，这里显示结果';
                         customResult.classList.add('empty');
-                        // 切换 tab 时清空所有随机历史
                         history = [];
                         customHistory = [];
                         renderCustomHistory();
@@ -1146,7 +1131,6 @@
                     return;
                 }
 
-                // 离开自定义 tab 时清空输入和结果，并停止未完成的滚动
                 if (currentTab === 'custom') {
                     customInput.value = '';
                     customResult.textContent = '输入选项后点随机，这里显示结果';
@@ -1158,7 +1142,6 @@
                     isCustomRolling = false;
                     randomBtn.disabled = false;
                     resetHistoryBtn.disabled = false;
-                    // 切换 tab 时清空所有随机历史
                     customHistory = [];
                     history = [];
                     renderHistory();
@@ -1172,7 +1155,6 @@
                     return;
                 }
 
-                // 切换到其他食物 tab 时也清空历史
                 history = [];
                 customHistory = [];
 
@@ -1234,7 +1216,6 @@
                     return;
                 }
 
-                // 滚动动画
                 isCustomRolling = true;
                 randomBtn.disabled = true;
                 resetHistoryBtn.disabled = true;
@@ -1251,7 +1232,7 @@
                         customResult.textContent = `🎯 ${finalPick}`;
                         customResult.style.transform = 'scale(1.1)';
                         setTimeout(() => { customResult.style.transform = 'scale(1)'; }, 150);
-                        addCustomHistory(finalPick);   // 记录到自定义历史
+                        addCustomHistory(finalPick);
                         isCustomRolling = false;
                         randomBtn.disabled = false;
                         resetHistoryBtn.disabled = false;
