@@ -500,14 +500,14 @@
 
         <div class="category-section">
             <div class="category-group" id="categoryGroup">
-                <button class="category-btn active" data-category="main" id="catNoodles">
+                <button class="category-btn active" data-category="custom" id="catCustom">
+                    自定义
+                </button>
+                <button class="category-btn" data-category="main" id="catNoodles">
                     正餐
                 </button>
                 <button class="category-btn" data-category="sweet" id="catDessert">
                     甜食
-                </button>
-                <button class="category-btn" data-category="custom" id="catCustom">
-                    自定义
                 </button>
             </div>
 
@@ -734,7 +734,7 @@
             const customResult = document.getElementById('customResult');
 
             let currentCategory = 'noodles';
-            let currentTab = 'main';
+            let currentTab = 'custom';
             let history = [];
             let customHistory = [];
             const MAX_HISTORY = 5;
@@ -1251,22 +1251,26 @@
             }
 
             function init() {
-                currentTab = 'main';
+                /* 默认进入自定义 tab */
+                currentTab = 'custom';
                 currentCategory = 'noodles';
 
                 syncMainButtonActive();
                 renderSubMenu();
                 updateSubGroupVisibility();
 
-                const defaultFood = foodCategories['noodles'].items[0];
-                updateFoodDisplay(defaultFood);
+                /* 自定义 tab 初始状态：清空输入与结果，聚焦输入框 */
+                customInput.value = '';
+                customResult.textContent = '输入选项后点随机，这里显示结果';
+                customResult.classList.add('empty');
                 history = [];
                 customHistory = [];
-                renderHistory();
+                renderCustomHistory();
+                customInput.focus();
 
+                catCustom.addEventListener('click', () => switchMainTab('custom'));
                 catNoodles.addEventListener('click', () => switchMainTab('main'));
                 catDessert.addEventListener('click', () => switchMainTab('sweet'));
-                catCustom.addEventListener('click', () => switchMainTab('custom'));
 
                 randomBtn.addEventListener('click', () => {
                     if (isRolling || isCustomRolling) return;
